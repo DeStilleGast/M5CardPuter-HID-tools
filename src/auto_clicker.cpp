@@ -27,7 +27,6 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
     bool isUsbConnected = _USB_PORT_STATUS == _state_mounted;
     
     canvas.fillTriangle(0, 0, 0, 50, 50, 0, isUsbConnected ? TFT_GREEN : TFT_RED);
-    canvas.fillTriangle(50, 50, 0, 50, 50, 0, _is_state_updated ? TFT_GREEN : TFT_RED);
     
   
   if (M5Cardputer.Keyboard.isChange() || _is_state_updated) { // key up triggers from the main menu
@@ -60,7 +59,7 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
     drawVolumeBar(canvas, "Up time " + String(clickUpSpeed) + "ms" , 10, 70, canvas.width() - 100, 30, clickUpSpeed, 10000, TFT_BACKGROUND_COLOR, TFT_WHITE, TFT_WHITE, currentUpdateIndex == 1 ? TFT_DARKGREY : TFT_BACKGROUND_COLOR);
 
     // clear mouse
-    canvas.fillRect(draw_visual_mouse_x - 35, 9, 71, 112, TFT_GREENYELLOW);
+    canvas.fillRect(draw_visual_mouse_x - 35, 9, 71, 112, TFT_BACKGROUND_COLOR);
 
     // mouse
     canvas.drawWedgeLine(draw_visual_mouse_x, 50, draw_visual_mouse_x, canvas.height() - 50, 30, 30, TFT_WHITE);

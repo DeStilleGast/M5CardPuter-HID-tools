@@ -58,7 +58,7 @@ void setup()
 {
   USB_Keyboard.begin();
   USB_Mouse.begin();
-  // USB.begin();
+  USB.begin();
   
 
   // USB.onEvent(usbEventCallback);
@@ -112,8 +112,7 @@ void loop()
   }
 
 
-// canvas.fillTriangle(0, 0, 0, 50, 50, 0, _USB_PORT_STATUS == _state_mounted ? TFT_GREEN : TFT_RED);
-  
+  canvas.fillTriangle(canvas.width(), 0, canvas.width() - 50, 0, canvas.width(), 50, _USB_PORT_STATUS == _state_mounted ? TFT_GREEN : TFT_RED);
 
   canvas.pushSprite(0, 0);
   
