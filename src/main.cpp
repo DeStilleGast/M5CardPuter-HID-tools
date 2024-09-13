@@ -2,30 +2,27 @@
 
 #include "M5Cardputer.h"
 #include "M5GFX.h"
-
 #include "USB.h"
 #include "USBHIDKeyboard.h"
 #include "USBHIDMouse.h"
-
 #include "guiElements.h"
 // #include "images.h"
 
-#include "globals.h"
+#include <Adafruit_NeoPixel.h>
 
 #include "auto_clicker.h"
-#include <Adafruit_NeoPixel.h>
+#include "globals.h"
 
 USBHIDKeyboard USB_Keyboard;
 USBHIDMouse USB_Mouse;
 
 M5Canvas canvas(&M5Cardputer.Display);
 
-#define PIN_RGB_LED    21
+#define PIN_RGB_LED 21
 Adafruit_NeoPixel _rgbLed;
 int rainbowColor = 0;
 
-
-const char *menu_options[] = {"Auto fire", "Auto move", "Be a keyboard"};
+const char* menu_options[] = {"Auto fire", "Auto move", "Be a keyboard"};
 int menuIndex = 0;
 int currentAction = 0;
 
@@ -36,241 +33,187 @@ void be_a_menu();
 void be_a_keyboard();
 static void usbEventCallback(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
 
-//  esptool.py --chip esp32s3 merge_bin -o combine.bin 0x0 bootloader.bin 0x8000 partitions.bin 0x10000 firmware.bin 
-
-
-
+//  esptool.py --chip esp32s3 merge_bin -o combine.bin 0x0 bootloader.bin 0x8000 partitions.bin 0x10000 firmware.bin
 
 // Invoked when device is mounted
-extern "C" void tud_mount_cb(void)
-{
+extern "C" void tud_mount_cb(void) {
     _USB_PORT_STATUS = _state_mounted;
     _is_state_updated = true;
 }
 
 // Invoked when device is unmounted
-extern "C" void tud_umount_cb(void)
-{
+extern "C" void tud_umount_cb(void) {
     _USB_PORT_STATUS = _state_wait_connect;
     _is_state_updated = true;
 }
 
-
-
-
-
-void setup()
-{
-  // init globals
+void setup() {
+    // init globals
     _USB_PORT_STATUS = _state_wait_connect;
     _is_state_updated = false;
 
- _rgbLed = Adafruit_NeoPixel(1, PIN_RGB_LED, NEO_GRB + NEO_KHZ800);
+    _rgbLed = Adafruit_NeoPixel(1, PIN_RGB_LED, NEO_GRB + NEO_KHZ800);
 
-  USB_Keyboard.begin();
-  USB_Mouse.begin();
-  // USB.begin();
-  
+    USB_Keyboard.begin();
+    USB_Mouse.begin();
+    // USB.begin();
 
-  // USB.onEvent(usbEventCallback);
+    // USB.onEvent(usbEventCallback);
 
-  auto cfg = M5.config();
-  M5Cardputer.begin(cfg, true);
+    auto cfg = M5.config();
+    M5Cardputer.begin(cfg, true);
 
+    canvas.createSprite(M5Cardputer.Display.width(), M5Cardputer.Display.height());
+    canvas.pushSprite(0, 0);
+    canvas.setSwapBytes(true);
 
-  canvas.createSprite(M5Cardputer.Display.width(),
-                      M5Cardputer.Display.height());
-  canvas.pushSprite(0, 0);
-  canvas.setSwapBytes(true);
+    M5Cardputer.Speaker.setVolume(50);
 
-  M5Cardputer.Speaker.setVolume(50);
-
-  drawMenuInterface();
+    drawMenuInterface();
 
     _rgbLed.begin();
     _rgbLed.setBrightness(50);  // Set LED brightness (0-255)
 }
 
-void loop()
-{
-  // put your main code here, to run repeatedly:
-  M5Cardputer.update();
+void loop() {
+    // put your main code here, to run repeatedly:
+    M5Cardputer.update();
 
-  // leds[0] = CRGB::Black; //CHSV(led_ih, 255, 150);
+    // leds[0] = CRGB::Black; //CHSV(led_ih, 255, 150);
     //  _rgbLed.setPixelColor(0, _rgbLed.ColorHSV(millis()*18, 255, 255));
     //  rainbowColor += 1;
     //  pixels.show();
 
+    if (M5Cardputer.BtnA.isPressed()) {
+        currentAction = 0;  // Reset back to menu
+        menuIndex = 0;
 
-  if (M5Cardputer.BtnA.isPressed()) {
-    currentAction = 0; // Reset back to menu
-    menuIndex = 0;
+        disableAutoClicker();
 
-    disableAutoClicker();
+        USB_Mouse.release();
 
-    USB_Mouse.release();
-    
-    drawMenuInterface();
+        drawMenuInterface();
 
+        _rgbLed.setPixelColor(0, 0);
+        _rgbLed.show();
+        return;
+    }
 
-    _rgbLed.setPixelColor(0, 0);
-    _rgbLed.show();
-    return;
-  }
+    switch (currentAction) {
+        case 0:
+            be_a_menu();
+            break;
+        case 1:
+            be_a_auto_clicker(canvas, USB_Mouse);
+            break;
+        case 2:
+            break;
+        case 3:
+            be_a_keyboard();
+        default:
+            break;
+    }
 
-  
-  switch (currentAction)
-  {
-  case 0:
-    be_a_menu();
-    break;
-  case 1:
-    be_a_auto_clicker(canvas, USB_Mouse);
-    break;
-  case 2:
-    break;
-  case 3:
-    be_a_keyboard();
-  default:
-    break;
-  }
+    // canvas.fillTriangle(canvas.width(), 0, canvas.width() - 50, 0, canvas.width(), 50, _USB_PORT_STATUS == _state_mounted ? TFT_GREEN : TFT_RED);
 
-
-  // canvas.fillTriangle(canvas.width(), 0, canvas.width() - 50, 0, canvas.width(), 50, _USB_PORT_STATUS == _state_mounted ? TFT_GREEN : TFT_RED);
-
-  canvas.pushSprite(0, 0);
-
-
-
+    canvas.pushSprite(0, 0);
 }
 
-void drawMenuInterface()
-{
-  canvas.clear(TFT_BACKGROUND_COLOR);
+void drawMenuInterface() {
+    canvas.clear(TFT_BACKGROUND_COLOR);
 
-  String modeStr = menu_options[menuIndex];;
+    String modeStr = menu_options[menuIndex];
+    ;
 
-  switch (menuIndex)
-  {
-  case 0:
-    // canvas.pushImage(canvas.width() / 2 - 32, canvas.height() / 2 - 32,  64, 64, image_data_cursor, TFT_BLACK);
-    break;
-  case 1:
-    break;
-  case 2:
-    // canvas.pushImage(canvas.width() / 2 - 32, canvas.height() / 2 - 32,  64, 64, image_data_keyboard_big, TFT_BLACK);
-    break;
-  default:
-    modeStr = "??? > " + currentAction;
-    break;
-  }
+    switch (menuIndex) {
+        case 0:
+            // canvas.pushImage(canvas.width() / 2 - 32, canvas.height() / 2 - 32,  64, 64, image_data_cursor, TFT_BLACK);
+            break;
+        case 1:
+            break;
+        case 2:
+            // canvas.pushImage(canvas.width() / 2 - 32, canvas.height() / 2 - 32,  64, 64, image_data_keyboard_big, TFT_BLACK);
+            break;
+        default:
+            modeStr = "??? > " + currentAction;
+            break;
+    }
 
-  canvas.setTextColor(0xffffffff);
-  canvas.setFont(&fonts::FreeMono12pt7b);
-  canvas.drawCenterString(modeStr, M5Cardputer.Display.width() / 2, 10);
+    canvas.setTextColor(0xffffffff);
+    canvas.setFont(&fonts::FreeMono12pt7b);
+    canvas.drawCenterString(modeStr, M5Cardputer.Display.width() / 2, 10);
 
-  canvas.pushSprite(0, 0);
+    canvas.pushSprite(0, 0);
 }
-
-
 
 void be_a_menu() {
-  if (M5Cardputer.Keyboard.isChange())
-  {
+    if (M5Cardputer.Keyboard.isChange()) {
+        if (M5Cardputer.Keyboard.isKeyPressed(';') || M5Cardputer.Keyboard.isKeyPressed(',')) {  // up
+            if (menuIndex > 0)
+                menuIndex--;
+        } else if (M5Cardputer.Keyboard.isKeyPressed('.') || M5Cardputer.Keyboard.isKeyPressed('/')) {  // down
+            if (menuIndex < 2)
+                menuIndex++;
+        } else if (M5Cardputer.Keyboard.isKeyPressed(KEY_ENTER)) {
+            currentAction = menuIndex + 1;
+            canvas.clear(TFT_BACKGROUND_COLOR);
+        }
 
-    if (M5Cardputer.Keyboard.isKeyPressed(';') || M5Cardputer.Keyboard.isKeyPressed(','))
-    { // up
-      if (menuIndex > 0)
-        menuIndex--;
+        // if (menuIndex >= 2)
+        //   menuIndex = 2;
+        // if (menuIndex <= 0)
+        //   menuIndex = 0;
+
+        menuIndex = constrain(menuIndex, 0, 2);
+
+        if (M5Cardputer.Keyboard.isPressed()) {
+            if (currentAction == 0)
+                drawMenuInterface();
+            // M5Cardputer.Speaker.tone(7000, 20);
+        } else {
+            // M5Cardputer.Speaker.tone(5000, 20);
+        }
     }
-    else if (M5Cardputer.Keyboard.isKeyPressed('.') || M5Cardputer.Keyboard.isKeyPressed('/'))
-    { // down
-      if (menuIndex < 2)
-        menuIndex++;
-    }
-    else if (M5Cardputer.Keyboard.isKeyPressed(KEY_ENTER)) {
-      currentAction = menuIndex + 1;
-      canvas.clear(TFT_BACKGROUND_COLOR);
-    }
-
-    // if (menuIndex >= 2)
-    //   menuIndex = 2;
-    // if (menuIndex <= 0)
-    //   menuIndex = 0;
-
-      menuIndex = constrain(menuIndex, 0, 2);
-
-
- if (M5Cardputer.Keyboard.isPressed()){
-    if(currentAction == 0)
-      drawMenuInterface();
-      // M5Cardputer.Speaker.tone(7000, 20);
-    } else {
-      // M5Cardputer.Speaker.tone(5000, 20);
-    }
-  }
- 
 }
 
-void be_a_keyboard()
-{
-  
-  if (M5Cardputer.Keyboard.isChange())
-  {
-    if (M5Cardputer.Keyboard.isPressed())
-    {
-      Keyboard_Class::KeysState status = M5Cardputer.Keyboard.keysState();
-      // for (auto i : status.word) {
-      //     Keyboard.press(i);
-      // }
-      KeyReport report = {0};
-      report.modifiers = status.modifiers;
-      uint8_t index = 0;
-      for (auto i : status.hid_keys)
-      {
-        report.keys[index] = i;
-        index++;
-        if (index > 5)
-        {
-          index = 5;
-        }
-      }
-      USB_Keyboard.sendReport(&report);
-      USB_Keyboard.releaseAll();
+void be_a_keyboard() {
+    if (M5Cardputer.Keyboard.isChange()) {
+        if (M5Cardputer.Keyboard.isPressed()) {
+            Keyboard_Class::KeysState status = M5Cardputer.Keyboard.keysState();
+            // for (auto i : status.word) {
+            //     Keyboard.press(i);
+            // }
+            KeyReport report = {0};
+            report.modifiers = status.modifiers;
+            uint8_t index = 0;
+            for (auto i : status.hid_keys) {
+                report.keys[index] = i;
+                index++;
+                if (index > 5) {
+                    index = 5;
+                }
+            }
+            USB_Keyboard.sendReport(&report);
+            USB_Keyboard.releaseAll();
 
-      // only text for display
-      String keyStr = "";
-      for (auto i : status.word)
-      {
-        if (keyStr != "")
-        {
-          keyStr = keyStr + "+" + i;
-        }
-        else
-        {
-          keyStr += i;
-        }
-      }
+            // only text for display
+            String keyStr = "";
+            for (auto i : status.word) {
+                if (keyStr != "") {
+                    keyStr = keyStr + "+" + i;
+                } else {
+                    keyStr += i;
+                }
+            }
 
-      if (keyStr.length() > 0)
-      {
-      
-        canvas.drawString(
-            keyStr, canvas.width() / 2,
-            canvas.height() / 2);
-
-      }
+            if (keyStr.length() > 0) {
+                canvas.drawString(keyStr, canvas.width() / 2, canvas.height() / 2);
+            }
+        } else {
+            canvas.drawString("USB Keyboard", canvas.width() / 2, canvas.height() / 2);
+        }
     }
-    else
-    {
-      
-      canvas.drawString("USB Keyboard",
-                                     canvas.width() / 2,
-                                     canvas.height() / 2);
-    }
-  }
 }
-
 
 // static void usbEventCallback(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data){
 //   if(event_base == ARDUINO_USB_EVENTS){
@@ -292,7 +235,6 @@ void be_a_keyboard()
 //         _USB_PORT_STATUS = _state_mounted;
 //         _is_state_updated = true;
 //         break;
-      
 //       default:
 //         break;
 //     }
