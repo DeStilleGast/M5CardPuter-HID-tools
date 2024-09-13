@@ -3,7 +3,10 @@
 #define myGlobalsFile 1
 
 #include <Arduino.h>
+#include <Adafruit_NeoPixel.h>
 
+
+const int TFT_BACKGROUND_COLOR = 0x528a;
 
 enum UsbKeyboardState_t
 {
@@ -14,6 +17,7 @@ enum UsbKeyboardState_t
 extern UsbKeyboardState_t _USB_PORT_STATUS;
 extern bool _is_state_updated;
 
-const int TFT_BACKGROUND_COLOR = 0x528a;// 0X1a1a1a;
+extern Adafruit_NeoPixel _rgbLed;
+
 
 #endif

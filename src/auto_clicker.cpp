@@ -24,6 +24,7 @@ const int32_t draw_visual_mouse_x = 240 - 45;
 UsbKeyboardState_t _USB_PORT_STATUS;
 bool _is_state_updated;
 
+
 void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
     bool isUsbConnected = _USB_PORT_STATUS == _state_mounted;
     
@@ -50,6 +51,13 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
       currentUpdateIndex = 1;
     } else if(M5Cardputer.Keyboard.isKeyPressed(' ') || M5Cardputer.Keyboard.isKeyPressed('p')){
       isAutoClickerActive = !isAutoClickerActive;
+
+      if(isAutoClickerActive){
+        _rgbLed.setPixelColor(0, _rgbLed.Color(0, 255, 0));
+      } else { 
+        _rgbLed.setPixelColor(0, _rgbLed.Color(255, 0, 0));
+      }
+      _rgbLed.show();
     }
 
     clickDownSpeed = constrain(clickDownSpeed, 0, 10000);
@@ -88,17 +96,15 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
     // canvas.drawCircle(20, 20, 10, lastActionWasDown ? 0xffff0000 : 0xff00ffff);
 
 
+  if(isAutoClickerActive && isUsbConnected){
     if(lastActionWasDown){
-      if(isAutoClickerActive){
-         USB_Mouse.press();
-        canvas.fillArc(draw_visual_mouse_x - 7, 44, 0, 15, 180, 270, TFT_BLACK);
-      }
+      USB_Mouse.press();
+      canvas.fillArc(draw_visual_mouse_x - 7, 44, 0, 15, 180, 270, TFT_BLACK);
     }else{
-      if(isAutoClickerActive) {
-        USB_Mouse.release();
-        canvas.fillArc(draw_visual_mouse_x - 7, 44, 0, 15, 180, 270, TFT_WHITE);
-      }
+      USB_Mouse.release();
+      canvas.fillArc(draw_visual_mouse_x - 7, 44, 0, 15, 180, 270, TFT_WHITE);
     }
+  }
 
     lastActionWasDown = !lastActionWasDown;
   }

@@ -21,7 +21,7 @@ USBHIDMouse USB_Mouse;
 M5Canvas canvas(&M5Cardputer.Display);
 
 #define PIN_RGB_LED    21
-Adafruit_NeoPixel pixels(1, PIN_RGB_LED, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel _rgbLed;
 int rainbowColor = 0;
 
 
@@ -65,9 +65,11 @@ void setup()
     _USB_PORT_STATUS = _state_wait_connect;
     _is_state_updated = false;
 
+ _rgbLed = Adafruit_NeoPixel(1, PIN_RGB_LED, NEO_GRB + NEO_KHZ800);
+
   USB_Keyboard.begin();
   USB_Mouse.begin();
-  USB.begin();
+  // USB.begin();
   
 
   // USB.onEvent(usbEventCallback);
@@ -85,8 +87,8 @@ void setup()
 
   drawMenuInterface();
 
-    pixels.begin();
-    pixels.setBrightness(50);  // Set LED brightness (0-255)
+    _rgbLed.begin();
+    _rgbLed.setBrightness(50);  // Set LED brightness (0-255)
 }
 
 void loop()
@@ -95,9 +97,9 @@ void loop()
   M5Cardputer.update();
 
   // leds[0] = CRGB::Black; //CHSV(led_ih, 255, 150);
-     pixels.setPixelColor(0, pixels.ColorHSV(millis()*18, 255, 255));
-     rainbowColor += 1;
-     pixels.show();
+    //  _rgbLed.setPixelColor(0, _rgbLed.ColorHSV(millis()*18, 255, 255));
+    //  rainbowColor += 1;
+    //  pixels.show();
 
 
   if (M5Cardputer.BtnA.isPressed()) {
@@ -109,6 +111,10 @@ void loop()
     USB_Mouse.release();
     
     drawMenuInterface();
+
+
+    _rgbLed.setPixelColor(0, 0);
+    _rgbLed.show();
     return;
   }
 
@@ -133,7 +139,7 @@ void loop()
   // canvas.fillTriangle(canvas.width(), 0, canvas.width() - 50, 0, canvas.width(), 50, _USB_PORT_STATUS == _state_mounted ? TFT_GREEN : TFT_RED);
 
   canvas.pushSprite(0, 0);
-  
+
 
 
 }
