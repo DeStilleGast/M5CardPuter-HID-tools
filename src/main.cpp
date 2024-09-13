@@ -30,6 +30,7 @@ int currentAction = 0;
 // put function declarations here:
 void drawMenuInterface();
 void be_a_menu();
+void prepare_next_application(int &appIndex);
 
 void be_a_keyboard();
 void drawUsbConnectionStatus();
@@ -162,6 +163,7 @@ void be_a_menu() {
                 menuIndex++;
         } else if (M5Cardputer.Keyboard.isKeyPressed(KEY_ENTER)) {
             currentAction = menuIndex + 1;
+            prepare_next_application(currentAction);
             canvas.clear(TFT_BACKGROUND_COLOR);
         }
 
@@ -181,6 +183,15 @@ void be_a_menu() {
         }
     }
 }
+
+void prepare_next_application(int &appIndex){
+  if(appIndex == 1){
+    _rgbLed.setPixelColor(0, _rgbLed.Color(255,0,0));
+    _rgbLed.show();
+  }
+
+}
+
 
 void be_a_keyboard() {
     if (M5Cardputer.Keyboard.isChange()) {
