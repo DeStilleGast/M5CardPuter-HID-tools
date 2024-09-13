@@ -21,12 +21,13 @@ bool isAutoClickerActive = false;
 const int32_t draw_visual_mouse_x = 240 - 45;
 // ==================================
 
-
+UsbKeyboardState_t _USB_PORT_STATUS;
+bool _is_state_updated;
 
 void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
     bool isUsbConnected = _USB_PORT_STATUS == _state_mounted;
     
-    canvas.fillTriangle(0, 0, 0, 50, 50, 0, isUsbConnected ? TFT_GREEN : TFT_RED);
+    // canvas.fillTriangle(0, 0, 0, 50, 50, 0, isUsbConnected ? TFT_GREEN : TFT_RED);
     
   
   if (M5Cardputer.Keyboard.isChange() || _is_state_updated) { // key up triggers from the main menu
@@ -36,7 +37,7 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
       if(currentUpdateIndex == 1) clickUpSpeed += 100;
     } else if(M5Cardputer.Keyboard.isKeyPressed(',')){
       if(currentUpdateIndex == 0) clickDownSpeed -= 100;
-      if(currentUpdateIndex == 1) clickUpSpeed -= 1000;
+      if(currentUpdateIndex == 1) clickUpSpeed -= 100;
     } else if(M5Cardputer.Keyboard.isKeyPressed('?')){
       if(currentUpdateIndex == 0) clickDownSpeed += 1000;
       if(currentUpdateIndex == 1) clickUpSpeed += 1000;
@@ -71,9 +72,11 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
     canvas.fillRect(draw_visual_mouse_x - 2, canvas.height() / 2 - 5, 5, 20);
     
     // draw crossed box if usb is not connected
-    if(isUsbConnected){
+    if(!isUsbConnected){
       drawCrossedBox(canvas, draw_visual_mouse_x - 30, 15, 60, 100);
     } 
+
+    _is_state_updated = false;
   }
 
 
@@ -86,34 +89,18 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
 
 
     if(lastActionWasDown){
-      if(isAutoClickerActive) USB_Mouse.press();
-      // canvas.fillArc(draw_visual_mouse_x - 7, 44, 0, 15, 180, 270, TFT_BLACK);
+      if(isAutoClickerActive){
+         USB_Mouse.press();
+        canvas.fillArc(draw_visual_mouse_x - 7, 44, 0, 15, 180, 270, TFT_BLACK);
+      }
     }else{
-      if(isAutoClickerActive) USB_Mouse.release();
-      // canvas.fillArc(draw_visual_mouse_x - 7, 44, 0, 15, 180, 270, TFT_WHITE);
+      if(isAutoClickerActive) {
+        USB_Mouse.release();
+        canvas.fillArc(draw_visual_mouse_x - 7, 44, 0, 15, 180, 270, TFT_WHITE);
+      }
     }
 
     lastActionWasDown = !lastActionWasDown;
-    // drawVolumeBar(canvas, "Down time " + String(clickDownSpeed) , 10, 10, canvas.width()/2, 30, clickDownSpeed, 10000, TFT_BACKGROUND_COLOR, TFT_WHITE, TFT_WHITE, TFT_DARKGRAY);
-
-
-    
-    // // clear mouse
-    // canvas.fillRect(draw_visual_mouse_x - 35, 9, 71, 112, TFT_BACKGROUND_COLOR);
-
-    // // mouse
-    // canvas.drawWedgeLine(draw_visual_mouse_x, 50, draw_visual_mouse_x, canvas.height() - 50, 30, 30, TFT_WHITE);
-    // canvas.fillRect(draw_visual_mouse_x - 25, 50, 51, 5, TFT_BLACK);
-    // canvas.fillRect(draw_visual_mouse_x - 1, 25, 3, 20, TFT_BLACK);
-
-    // // power indicator
-    // canvas.fillArc(draw_visual_mouse_x, canvas.height() / 2 + 15, 15, 18, 270 + 35, 270 + 325, isAutoClickerActive ? TFT_GREEN : TFT_RED);
-    // canvas.fillRect(draw_visual_mouse_x - 2, canvas.height() / 2 - 5, 5, 20);
-    
-    // // draw crossed box if usb is not connected
-    // if(lastActionWasDown){
-    //   drawCrossedBox(canvas, draw_visual_mouse_x - 30, 15, 60, 100);
-    // } 
   }
 }
 

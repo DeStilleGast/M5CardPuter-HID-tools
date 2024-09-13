@@ -13,11 +13,16 @@
 #include "globals.h"
 
 #include "auto_clicker.h"
+#include <Adafruit_NeoPixel.h>
 
 USBHIDKeyboard USB_Keyboard;
 USBHIDMouse USB_Mouse;
 
 M5Canvas canvas(&M5Cardputer.Display);
+
+#define PIN_RGB_LED    21
+Adafruit_NeoPixel pixels(1, PIN_RGB_LED, NEO_GRB + NEO_KHZ800);
+int rainbowColor = 0;
 
 
 const char *menu_options[] = {"Auto fire", "Auto move", "Be a keyboard"};
@@ -56,6 +61,10 @@ extern "C" void tud_umount_cb(void)
 
 void setup()
 {
+  // init globals
+    _USB_PORT_STATUS = _state_wait_connect;
+    _is_state_updated = false;
+
   USB_Keyboard.begin();
   USB_Mouse.begin();
   USB.begin();
@@ -75,12 +84,21 @@ void setup()
   M5Cardputer.Speaker.setVolume(50);
 
   drawMenuInterface();
+
+    pixels.begin();
+    pixels.setBrightness(50);  // Set LED brightness (0-255)
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
   M5Cardputer.update();
+
+  // leds[0] = CRGB::Black; //CHSV(led_ih, 255, 150);
+     pixels.setPixelColor(0, pixels.ColorHSV(millis()*18, 255, 255));
+     rainbowColor += 1;
+     pixels.show();
+
 
   if (M5Cardputer.BtnA.isPressed()) {
     currentAction = 0; // Reset back to menu
@@ -112,13 +130,12 @@ void loop()
   }
 
 
-  canvas.fillTriangle(canvas.width(), 0, canvas.width() - 50, 0, canvas.width(), 50, _USB_PORT_STATUS == _state_mounted ? TFT_GREEN : TFT_RED);
+  // canvas.fillTriangle(canvas.width(), 0, canvas.width() - 50, 0, canvas.width(), 50, _USB_PORT_STATUS == _state_mounted ? TFT_GREEN : TFT_RED);
 
   canvas.pushSprite(0, 0);
   
 
 
-  _is_state_updated = false;
 }
 
 void drawMenuInterface()

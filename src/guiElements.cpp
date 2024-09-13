@@ -53,3 +53,14 @@ void drawCrossedBox(M5Canvas &canvas, int32_t x, int32_t y, int32_t w, int32_t h
     canvas.drawWideLine(x, y, x + w, y + h, 5, TFT_RED);
     canvas.drawWideLine(x + w, y, x, y + h, 5, TFT_RED);
 }
+
+
+void drawMouseIcon(M5Canvas &canvas, int32_t x, int32_t y, int TFT_BACKGROUND_COLOR){
+    // clear mouse
+    canvas.fillRect(x - 35, 9, 71, 112, TFT_BACKGROUND_COLOR);
+
+    // mouse
+    canvas.drawWedgeLine(x, 50, x, canvas.height() - 50, 30, 30, TFT_WHITE);
+    canvas.fillRect(x - 25, 50, 51, 5, TFT_BLACK);
+    canvas.fillRect(x - 1, 25, 3, 20, TFT_BLACK);
+}
