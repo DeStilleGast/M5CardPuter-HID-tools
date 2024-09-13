@@ -11,6 +11,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #include "auto_clicker.h"
+#include "mouse_jiggler.h"
 #include "globals.h"
 
 USBHIDKeyboard USB_Keyboard;
@@ -22,7 +23,7 @@ M5Canvas canvas(&M5Cardputer.Display);
 Adafruit_NeoPixel _rgbLed;
 int rainbowColor = 0;
 
-const char* menu_options[] = {"Auto fire", "Auto move", "Be a keyboard"};
+const char* menu_options[] = {"Auto clicker", "Mouse jiggler", "Be a keyboard"};
 int menuIndex = 0;
 int currentAction = 0;
 
@@ -31,7 +32,7 @@ void drawMenuInterface();
 void be_a_menu();
 
 void be_a_keyboard();
-static void usbEventCallback(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
+void drawUsbConnectionStatus();
 
 //  esptool.py --chip esp32s3 merge_bin -o combine.bin 0x0 bootloader.bin 0x8000 partitions.bin 0x10000 firmware.bin
 
@@ -54,9 +55,12 @@ void setup() {
 
     _rgbLed = Adafruit_NeoPixel(1, PIN_RGB_LED, NEO_GRB + NEO_KHZ800);
 
+
+
+
     USB_Keyboard.begin();
     USB_Mouse.begin();
-    // USB.begin();
+    USB.begin();
 
     // USB.onEvent(usbEventCallback);
 
@@ -107,6 +111,7 @@ void loop() {
             be_a_auto_clicker(canvas, USB_Mouse);
             break;
         case 2:
+            be_a_mouse_jiggler(canvas, USB_Mouse);
             break;
         case 3:
             be_a_keyboard();
@@ -143,10 +148,11 @@ void drawMenuInterface() {
     canvas.setFont(&fonts::FreeMono12pt7b);
     canvas.drawCenterString(modeStr, M5Cardputer.Display.width() / 2, 10);
 
-    canvas.pushSprite(0, 0);
 }
 
 void be_a_menu() {
+    drawUsbConnectionStatus();
+
     if (M5Cardputer.Keyboard.isChange()) {
         if (M5Cardputer.Keyboard.isKeyPressed(';') || M5Cardputer.Keyboard.isKeyPressed(',')) {  // up
             if (menuIndex > 0)
@@ -240,3 +246,51 @@ void be_a_keyboard() {
 //     }
 //   }
 // }
+
+
+void drawUsbConnectionStatus(){
+    // canvas.drawBezier(100, 50, 100, 60, 110, 60, 110, 50);
+    // canvas.drawWedgeLine(100, 50, 120, 70, 5, 5, TFT_RED);
+
+    int cable_x = canvas.width() / 2 - 35;
+    int cable_y = 50;
+    bool isConnected = _USB_PORT_STATUS == _state_mounted;
+
+    canvas.fillRect(cable_x, cable_y - 5, 120, 40, TFT_BACKGROUND_COLOR);
+
+    canvas.drawWideLine(cable_x, cable_y, cable_x + 20, cable_y, 3, TFT_WHITE);
+    canvas.drawWideLine(cable_x + 20, cable_y, cable_x + 10, cable_y + 15, 3, TFT_WHITE);
+    canvas.drawWideLine(cable_x + 10, cable_y + 15, cable_x + 30, cable_y + 15, 3, TFT_WHITE);
+    
+    canvas.fillRect(cable_x + 26, cable_y + 8, 7, 16);
+
+    
+    if(!isConnected){
+      canvas.fillRect(cable_x + 32, cable_y + 12, 10, 9, TFT_LIGHTGREY);
+    }
+    
+    cable_x += isConnected ? 40 : 55;
+    cable_y += 15;
+
+    canvas.fillRect(cable_x - 7, cable_y - 7, 7, 16, TFT_WHITE);
+    canvas.drawWideLine(cable_x, cable_y, cable_x + 20, cable_y, 3, TFT_WHITE);
+    canvas.drawWideLine(cable_x + 20, cable_y, cable_x + 10, cable_y + 15, 3, TFT_WHITE);
+    canvas.drawWideLine(cable_x + 10, cable_y + 15, cable_x + 30, cable_y + 15, 3, TFT_WHITE);
+
+    if(!isConnected){
+        bool swapColors = millis() % 1000 > 500;
+        canvas.setTextColor(swapColors ? TFT_YELLOW : TFT_BLUE);
+
+        cable_x -= 10;
+        cable_y -= 15;
+        
+        canvas.fillCircle(cable_x + 44, cable_y + 5 , 10, swapColors ? TFT_BLUE : TFT_YELLOW);
+        canvas.drawString("!", cable_x + 40, cable_y - 5, &fonts::DejaVu24);
+
+        // cable_x -= 10;
+        // cable_y -= 15;
+
+        // canvas.fillCircle(cable_x + 48, cable_y + 12 , 20, TFT_BLUE);
+        // canvas.drawString("!", cable_x + 40, cable_y - 5, &fonts::DejaVu40);
+    }
+}
