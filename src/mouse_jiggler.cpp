@@ -51,9 +51,6 @@ u32_t menuItemSize = sizeof(patternNames) / sizeof(*patternNames);
 unsigned long currentCircleAngle = 0;
 
 
-void moveMouse(M5Canvas &canvas, USBHIDMouse &USB_Mouse, int deltaX, int deltaY);
-void drawMouse(M5Canvas &canvas, bool isUsbConnected, int drawX, int drawY, bool goLeft, bool goRight, bool goUp, bool goDown);
-
 int getPatternPos(u32_t patternSize){
     return millis() / jiggleSpeed % patternSize;
 }
@@ -86,21 +83,8 @@ void be_a_mouse_jiggler(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
         currentPos = leftRightPattern[posIndex];
     }
 
-
-    // canvas.fillRect(50, 50, 20, 20, TFT_BACKGROUND_COLOR);
-    // canvas.drawString(String(posIndex), 50, 50);
-    
-
-    
-    // u64_t posIndex = millis() / 1000 % patternSize;
-    // Vector2 currentPos = currentPattern[posIndex];
-
-    // canvas.fillRect(0, 0, 20, 20, TFT_BACKGROUND_COLOR);
     // canvas.drawString(String(posIndex), 5, 5);
     // canvas.drawString(String(squarePatternSize), 25, 5);
-
-    
-    
     
     if (M5Cardputer.Keyboard.isChange() || _is_state_updated) {  // key up triggers from the main menu
         _is_state_updated = false;
@@ -148,8 +132,6 @@ void be_a_mouse_jiggler(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
         moveMouse(canvas, USB_Mouse, currentPos.x, currentPos.y);
     }
 
-    
-
 
     if(lastIndex != posIndex){
         moveMouse(canvas, USB_Mouse, currentPos.x, currentPos.y);
@@ -164,9 +146,6 @@ void be_a_mouse_jiggler(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
 /// @param deltaY mouse relative Y movement
 void moveMouse(M5Canvas &canvas, USBHIDMouse &USB_Mouse, int deltaX, int deltaY){
     bool isUsbConnected = _USB_PORT_STATUS == _state_mounted;
-
-    // int moveX = lastX + deltaX;
-    // int moveY = lastY + deltaY;
 
     drawMouse(canvas, isUsbConnected, canvas.width() - 50, 80, deltaX < 0, deltaX > 0, deltaY < 0, deltaY > 0);
     
@@ -194,12 +173,6 @@ void drawMouse(M5Canvas &canvas, bool isUsbConnected, int drawX, int drawY, bool
     canvas.fillRect(drawX - 27, drawY -23, 55, 68, TFT_BACKGROUND_COLOR);
     canvas.drawRect(drawX - 27, drawY -23, 55, 68, isJigglerActive ? TFT_GREEN : TFT_RED);
 
-    // bool goRight = millis() / 1000 % 5 > 2;
-    // bool goLeft = !goRight;
-
-    // bool goUp = ((millis()+1500) / 1000) % 5 > 2;
-    // bool goDown = !goUp;
-    
     if(goRight) drawX += 5;
     if(goLeft) drawX -= 5;
     if(goDown) drawY += 5;
@@ -229,7 +202,6 @@ void drawMouse(M5Canvas &canvas, bool isUsbConnected, int drawX, int drawY, bool
         canvas.drawWideLine(drawX - 3, drawY + 41, drawX + 3, drawY + 41, 1, TFT_WHITE);
     }
 
-    
     canvas.drawWideLine(drawX, drawY, drawX, drawY + 20, 10, TFT_WHITE);
     canvas.fillRect(drawX - 7, drawY + 1, 16, 3, TFT_BLACK);
     canvas.fillRect(drawX , drawY - 7, 1, 6, TFT_BLACK);

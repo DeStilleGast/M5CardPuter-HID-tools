@@ -98,6 +98,7 @@ void loop() {
         menuIndex = 0;
 
         disableAutoClicker();
+        disableMouseJiggler();
 
         USB_Mouse.release();
 
