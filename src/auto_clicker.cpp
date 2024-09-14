@@ -22,6 +22,9 @@ const int32_t draw_visual_mouse_x = 240 - 45;
 UsbKeyboardState_t _USB_PORT_STATUS;
 bool _is_state_updated;
 
+/// @brief Act as a autoclicker app
+/// @param canvas Canvas to draw images
+/// @param USB_Mouse USB Mouse reference
 void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
     bool isUsbConnected = _USB_PORT_STATUS == _state_mounted;
 
