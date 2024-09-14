@@ -189,7 +189,7 @@ void be_a_menu() {
 }
 
 void prepare_next_application(int &appIndex){
-  if(appIndex == 1){
+  if(appIndex == 1 || appIndex == 2){
     _rgbLed.setPixelColor(0, _rgbLed.Color(255,0,0));
     _rgbLed.show();
   }

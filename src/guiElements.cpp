@@ -43,6 +43,27 @@ void drawVolumeBar(M5Canvas &canvas, String label, int32_t x, int32_t y, int32_t
 }
 
 
+void drawLabeledBox(M5Canvas &canvas, String label, int32_t x, int32_t y, int32_t w, int32_t h, int background_color, int border_color){
+    canvas.setTextColor(TFT_WHITE);
+    //canvas.fillRect(x, y, canvas.textWidth(label) + 20, canvas.fontHeight(), background_color);
+    // canvas.drawString(label, x, y);
+    canvas.fillRect(x, y + canvas.fontHeight(), w, h, background_color);
+    canvas.drawCenterString(label, x + w / 2, y );
+
+    canvas.drawRect(x, y + canvas.fontHeight(), w, h, border_color);
+}
+
+
+void drawLabeledTextBox(M5Canvas &canvas, String label, String text, int32_t x, int32_t y, int32_t w, int32_t h, int background_color, int border_color){
+    drawLabeledBox(canvas, label, x, y, w, h, background_color, border_color);
+
+    canvas.setClipRect(x, y + canvas.fontHeight(), w, h);
+    canvas.drawCenterString(text, 1 + x + (w/2), 1 + y + canvas.fontHeight());
+    canvas.clearClipRect();
+}
+
+
+
 void drawCrossedBox(M5Canvas &canvas, int32_t x, int32_t y, int32_t w, int32_t h) {
     canvas.drawWideLine(x, y, x + w, y, 5, TFT_RED);
     canvas.drawWideLine(x, y, x, y + h, 5, TFT_RED);
