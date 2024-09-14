@@ -19,8 +19,6 @@ bool isAutoClickerActive = false;
 const int32_t draw_visual_mouse_x = 240 - 45;
 // ==================================
 
-UsbKeyboardState_t _USB_PORT_STATUS;
-bool _is_state_updated;
 
 /// @brief Act as a autoclicker app
 /// @param canvas Canvas to draw images

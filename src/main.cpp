@@ -27,6 +27,10 @@ const char* menu_options[] = {"Auto clicker", "Mouse jiggler", "Be a keyboard"};
 int menuIndex = 0;
 int currentAction = 0;
 
+// global thingys ?
+UsbKeyboardState_t _USB_PORT_STATUS;
+bool _is_state_updated;
+
 // put function declarations here:
 void drawMenuInterface();
 void be_a_menu();
