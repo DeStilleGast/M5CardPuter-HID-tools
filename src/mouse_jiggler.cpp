@@ -51,6 +51,10 @@ u32_t menuItemSize = sizeof(patternNames) / sizeof(*patternNames);
 unsigned long currentCircleAngle = 0;
 
 
+void moveMouse(M5Canvas &canvas, USBHIDMouse &USB_Mouse, int deltaX, int deltaY);
+void drawMouse(M5Canvas &canvas, bool isUsbConnected, int drawX, int drawY, bool goLeft, bool goRight, bool goUp, bool goDown);
+
+
 int getPatternPos(u32_t patternSize){
     return millis() / jiggleSpeed % patternSize;
 }

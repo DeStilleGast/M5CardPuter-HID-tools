@@ -23,7 +23,8 @@ M5Canvas canvas(&M5Cardputer.Display);
 Adafruit_NeoPixel _rgbLed;
 int rainbowColor = 0;
 
-const char* menu_options[] = {"Auto clicker", "Mouse jiggler", "Be a keyboard"};
+const char* mainMenuOptions[] = {"Auto clicker", "Mouse jiggler", "Mash keyboard", "Be a keyboard"};
+const unsigned int mainMenuSize = sizeof(mainMenuOptions) / sizeof(*mainMenuOptions);
 int menuIndex = 0;
 int currentAction = 0;
 
@@ -133,7 +134,7 @@ void loop() {
 void drawMenuInterface() {
     canvas.clear(TFT_BACKGROUND_COLOR);
 
-    String modeStr = menu_options[menuIndex];
+    String modeStr = mainMenuOptions[menuIndex];
     ;
 
     switch (menuIndex) {
@@ -161,11 +162,9 @@ void be_a_menu() {
 
     if (M5Cardputer.Keyboard.isChange()) {
         if (M5Cardputer.Keyboard.isKeyPressed(';') || M5Cardputer.Keyboard.isKeyPressed(',')) {  // up
-            if (menuIndex > 0)
-                menuIndex--;
+            menuIndex--;
         } else if (M5Cardputer.Keyboard.isKeyPressed('.') || M5Cardputer.Keyboard.isKeyPressed('/')) {  // down
-            if (menuIndex < 2)
-                menuIndex++;
+            menuIndex++;
         } else if (M5Cardputer.Keyboard.isKeyPressed(KEY_ENTER)) {
             currentAction = menuIndex + 1;
             prepare_next_application(currentAction);
@@ -177,7 +176,7 @@ void be_a_menu() {
         // if (menuIndex <= 0)
         //   menuIndex = 0;
 
-        menuIndex = constrain(menuIndex, 0, 2);
+        menuIndex = constrain(menuIndex, 0, mainMenuSize - 1);
 
         if (M5Cardputer.Keyboard.isPressed()) {
             if (currentAction == 0)
