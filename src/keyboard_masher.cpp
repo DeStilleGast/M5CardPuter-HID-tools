@@ -58,7 +58,7 @@ void be_a_keyboard_masher(M5Canvas &canvas, USBHIDKeyboard &USB_Keyboard){
         USB_Keyboard.releaseAll();
     }
 
-    if(millis() - lastUpdate >= mashSpeed || _is_state_updated){
+    if(millis() - lastUpdate >= mashSpeed || _IS_USB_STATE_UPDATED){
         lastUpdate = millis();
 
         // Generate a random key press
@@ -90,7 +90,7 @@ void be_a_keyboard_masher(M5Canvas &canvas, USBHIDKeyboard &USB_Keyboard){
 
         lastRelease = millis();
 
-        _is_state_updated = false;
+        _IS_USB_STATE_UPDATED = false;
     }
 }
 
@@ -116,7 +116,7 @@ void drawKeyboard_random(M5Canvas &canvas, unsigned int x, unsigned int y, char 
         }
     }
 
-    if(_USB_PORT_STATUS != _state_mounted){
+    if(_USB_PORT_STATUS != _USB_STATE_CONNECTED){
         drawCrossedBox(canvas, x, y, 146, 46);
     }
 }

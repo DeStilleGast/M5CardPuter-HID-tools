@@ -88,8 +88,8 @@ void be_a_mouse_jiggler(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
     // canvas.drawString(String(posIndex), 5, 5);
     // canvas.drawString(String(squarePatternSize), 25, 5);
     
-    if (M5Cardputer.Keyboard.isChange() || _is_state_updated) {  // key up triggers from the main menu
-        _is_state_updated = false;
+    if (M5Cardputer.Keyboard.isChange() || _IS_USB_STATE_UPDATED) {  // key up triggers from the main menu
+        _IS_USB_STATE_UPDATED = false;
 
         if (M5Cardputer.Keyboard.isKeyPressed(',')) {
             if (selectAction == 0) selectedPatternIndex --;
@@ -147,7 +147,7 @@ void be_a_mouse_jiggler(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
 /// @param deltaX mouse relative X movement
 /// @param deltaY mouse relative Y movement
 void moveMouse(M5Canvas &canvas, USBHIDMouse &USB_Mouse, int deltaX, int deltaY){
-    bool isUsbConnected = _USB_PORT_STATUS == _state_mounted;
+    bool isUsbConnected = _USB_PORT_STATUS == _USB_STATE_CONNECTED;
 
     drawMouse(canvas, isUsbConnected, canvas.width() - 50, 80, deltaX < 0, deltaX > 0, deltaY < 0, deltaY > 0);
     

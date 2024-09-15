@@ -31,34 +31,33 @@ int currentAction = 0;
 
 // global thingys ?
 UsbKeyboardState_t _USB_PORT_STATUS;
-bool _is_state_updated;
+bool _IS_USB_STATE_UPDATED;
 
 // put function declarations here:
 void drawMenuInterface();
 void be_a_menu();
 void prepare_next_application(int &appIndex);
 
-void be_a_keyboard();
 void drawUsbConnectionStatus();
 
 //  esptool.py --chip esp32s3 merge_bin -o combine.bin 0x0 bootloader.bin 0x8000 partitions.bin 0x10000 firmware.bin
 
 // Invoked when device is mounted
 extern "C" void tud_mount_cb(void) {
-    _USB_PORT_STATUS = _state_mounted;
-    _is_state_updated = true;
+    _USB_PORT_STATUS = _USB_STATE_CONNECTED;
+    _IS_USB_STATE_UPDATED = true;
 }
 
 // Invoked when device is unmounted
 extern "C" void tud_umount_cb(void) {
-    _USB_PORT_STATUS = _state_wait_connect;
-    _is_state_updated = true;
+    _USB_PORT_STATUS = _USB_STATE_WAITING;
+    _IS_USB_STATE_UPDATED = true;
 }
 
 void setup() {
     // init globals
-    _USB_PORT_STATUS = _state_wait_connect;
-    _is_state_updated = false;
+    _USB_PORT_STATUS = _USB_STATE_WAITING;
+    _IS_USB_STATE_UPDATED = false;
 
     _rgbLed = Adafruit_NeoPixel(1, PIN_RGB_LED, NEO_GRB + NEO_KHZ800);
 
@@ -134,7 +133,7 @@ void loop() {
             break;
     }
 
-    // canvas.fillTriangle(canvas.width(), 0, canvas.width() - 50, 0, canvas.width(), 50, _USB_PORT_STATUS == _state_mounted ? TFT_GREEN : TFT_RED);
+    // canvas.fillTriangle(canvas.width(), 0, canvas.width() - 50, 0, canvas.width(), 50, _USB_PORT_STATUS == _USB_STATE_CONNECTED ? TFT_GREEN : TFT_RED);
 
     canvas.pushSprite(0, 0);
 }
@@ -180,11 +179,6 @@ void be_a_menu() {
             prepare_next_application(currentAction);
             canvas.clear(TFT_BACKGROUND_COLOR);
         }
-
-        // if (menuIndex >= 2)
-        //   menuIndex = 2;
-        // if (menuIndex <= 0)
-        //   menuIndex = 0;
 
         menuIndex = constrain(menuIndex, 0, mainMenuSize - 1);
 
@@ -250,20 +244,20 @@ void be_a_keyboard() {
 //     arduino_usb_event_data_t * data = (arduino_usb_event_data_t*)event_data;
 //     switch (event_id){
 //       case ARDUINO_USB_STARTED_EVENT:
-//         _USB_PORT_STATUS = _state_mounted;
-//         _is_state_updated = true;
+//         _USB_PORT_STATUS = _USB_STATE_CONNECTED;
+//         _IS_USB_STATE_UPDATED = true;
 //         break;
 //       case ARDUINO_USB_STOPPED_EVENT:
-//         _USB_PORT_STATUS = _state_wait_connect;
-//         _is_state_updated = true;
+//         _USB_PORT_STATUS = _USB_STATE_WAITING;
+//         _IS_USB_STATE_UPDATED = true;
 //         break;
 //       case ARDUINO_USB_SUSPEND_EVENT:
-//         _USB_PORT_STATUS = _state_wait_connect;
-//         _is_state_updated = true;
+//         _USB_PORT_STATUS = _USB_STATE_WAITING;
+//         _IS_USB_STATE_UPDATED = true;
 //         break;
 //       case ARDUINO_USB_RESUME_EVENT:
-//         _USB_PORT_STATUS = _state_mounted;
-//         _is_state_updated = true;
+//         _USB_PORT_STATUS = _USB_STATE_CONNECTED;
+//         _IS_USB_STATE_UPDATED = true;
 //         break;
 //       default:
 //         break;
@@ -278,7 +272,7 @@ void drawUsbConnectionStatus(){
 
     int cable_x = canvas.width() / 2 - 35;
     int cable_y = 50;
-    bool isConnected = _USB_PORT_STATUS == _state_mounted;
+    bool isConnected = _USB_PORT_STATUS == _USB_STATE_CONNECTED;
 
     canvas.fillRect(cable_x, cable_y - 5, 120, 40, TFT_BACKGROUND_COLOR);
 

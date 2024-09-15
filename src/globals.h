@@ -10,12 +10,12 @@ const int TFT_BACKGROUND_COLOR = 0x528a;
 
 enum UsbKeyboardState_t
 {
-    _state_wait_connect = 0,
-    _state_mounted,
+    _USB_STATE_WAITING = 0,
+    _USB_STATE_CONNECTED,
 };
 
 extern UsbKeyboardState_t _USB_PORT_STATUS;
-extern bool _is_state_updated;
+extern bool _IS_USB_STATE_UPDATED;
 
 extern Adafruit_NeoPixel _rgbLed;
 

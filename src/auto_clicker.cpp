@@ -24,11 +24,11 @@ const int32_t draw_visual_mouse_x = 240 - 45;
 /// @param canvas Canvas to draw images
 /// @param USB_Mouse USB Mouse reference
 void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
-    bool isUsbConnected = _USB_PORT_STATUS == _state_mounted;
+    bool isUsbConnected = _USB_PORT_STATUS == _USB_STATE_CONNECTED;
 
     // canvas.fillTriangle(0, 0, 0, 50, 50, 0, isUsbConnected ? TFT_GREEN : TFT_RED);
 
-    if (M5Cardputer.Keyboard.isChange() || _is_state_updated) {  // key up triggers from the main menu
+    if (M5Cardputer.Keyboard.isChange() || _IS_USB_STATE_UPDATED) {  // key up triggers from the main menu
 
         if (M5Cardputer.Keyboard.isKeyPressed('/')) {
             if (currentUpdateIndex == 0) clickDownSpeed += 100;
@@ -81,7 +81,7 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
             drawCrossedBox(canvas, draw_visual_mouse_x - 30, 15, 60, 100);
         }
 
-        _is_state_updated = false;
+        _IS_USB_STATE_UPDATED = false;
     }
 
     if (millis() - lastActionMillis >= (lastActionWasDown ? clickUpSpeed : clickDownSpeed)) {
