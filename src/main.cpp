@@ -14,6 +14,8 @@
 #include "mouse_jiggler.h"
 #include "keyboard_masher.h"
 #include "regular_keyboard.h"
+#include "regular_mouse.h"
+
 #include "globals.h"
 
 USBHIDKeyboard USB_Keyboard;
@@ -63,11 +65,9 @@ void setup() {
     _rgbLed = Adafruit_NeoPixel(1, PIN_RGB_LED, NEO_GRB + NEO_KHZ800);
 
 
-
-
     USB_Keyboard.begin();
     USB_Mouse.begin();
-    // USB.begin();
+    USB.begin();
 
     // USB.onEvent(usbEventCallback);
 
@@ -107,6 +107,7 @@ void loop() {
         disableMouseJiggler();
 
         USB_Mouse.release();
+        USB_Keyboard.releaseAll();
 
         drawMenuInterface();
 
@@ -130,6 +131,9 @@ void loop() {
             break;
         case 4:
             be_a_keyboard(canvas, USB_Keyboard);
+            break;
+        case 5:
+            be_a_mouse(canvas, USB_Mouse);
             break;
         default:
             break;

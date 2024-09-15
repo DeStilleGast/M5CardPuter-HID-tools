@@ -60,7 +60,6 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
         clickDownSpeed = constrain(clickDownSpeed, 0, 10000);
         clickUpSpeed = constrain(clickUpSpeed, 0, 10000);
 
-        canvas.setFont(&fonts::DejaVu12);
         drawVolumeBar(canvas, "Down time " + String(clickDownSpeed) + "ms", 10, 10, canvas.width() - 100, 30, clickDownSpeed, 10000, TFT_BACKGROUND_COLOR, TFT_WHITE, TFT_WHITE, currentUpdateIndex == 0 ? TFT_DARKGREY : TFT_BACKGROUND_COLOR);
         drawVolumeBar(canvas, "Up time " + String(clickUpSpeed) + "ms", 10, 70, canvas.width() - 100, 30, clickUpSpeed, 10000, TFT_BACKGROUND_COLOR, TFT_WHITE, TFT_WHITE, currentUpdateIndex == 1 ? TFT_DARKGREY : TFT_BACKGROUND_COLOR);
 

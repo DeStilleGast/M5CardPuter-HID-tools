@@ -35,6 +35,8 @@ void drawVolumeBar(M5Canvas &canvas, int32_t x, int32_t y, int32_t w, int32_t h,
 
 
 void drawVolumeBar(M5Canvas &canvas, String label, int32_t x, int32_t y, int32_t w, int32_t h, int32_t progress, int32_t max_progress, int background_color, int border_color, int active_color, int inactive_color){
+    canvas.setFont(&fonts::DejaVu12);
+    
     canvas.setTextColor(TFT_WHITE);
     canvas.fillRect(x, y, canvas.textWidth(label) + 20, canvas.fontHeight(), background_color);
     canvas.drawString(label, x, y);

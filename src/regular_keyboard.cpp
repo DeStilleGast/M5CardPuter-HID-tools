@@ -14,7 +14,7 @@ void be_a_keyboard(M5Canvas &canvas, USBHIDKeyboard &USB_Keyboard){
     if(_IS_USB_STATE_UPDATED || firstTick){
         canvas.setTextColor(isUsbConnected ? TFT_GREEN : TFT_RED);
 
-        canvas.fillRect(0, 15, canvas.width(), 30 + canvas.fontHeight());
+        canvas.fillRect(0, 15, canvas.width(), 30 + canvas.fontHeight(), TFT_BACKGROUND_COLOR);
 
         canvas.drawCenterString("State:", canvas.width() / 2, 20);
         canvas.drawCenterString(isUsbConnected ? "Connected" : "Disconnected", canvas.width() / 2, 20 + canvas.fontHeight());

@@ -4,6 +4,7 @@
 
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
+#include "M5Cardputer.h"
 
 
 const int TFT_BACKGROUND_COLOR = 0x528a;
