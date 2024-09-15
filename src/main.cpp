@@ -197,9 +197,19 @@ void be_a_menu() {
 }
 
 void prepare_next_application(int &appIndex){
+
+    if(appIndex == 4 || appIndex == 5){
+        if(_USB_PORT_STATUS == _USB_STATE_CONNECTED){
+            _rgbLed.setPixelColor(0, _rgbLed.Color(0,255,0));
+        } else {
+            _rgbLed.setPixelColor(0, _rgbLed.Color(255,0,0));
+        } 
+        _rgbLed.show();
+    } else {
   
-    _rgbLed.setPixelColor(0, _rgbLed.Color(255,0,0));
-    _rgbLed.show();
+        _rgbLed.setPixelColor(0, _rgbLed.Color(255,0,0));
+        _rgbLed.show();
+    }
 
 }
 

@@ -5,11 +5,22 @@
 #include "globals.h"
 #include "guiElements.h"
 
+bool firstTick = true;
 
 void be_a_keyboard(M5Canvas &canvas, USBHIDKeyboard &USB_Keyboard){
 
-    canvas.setTextColor(_USB_PORT_STATUS == _USB_STATE_CONNECTED ? TFT_GREEN : TFT_RED);
-    canvas.drawCenterString("State: Unknown", canvas.width() / 2, 20);
+    bool isUsbConnected = _USB_PORT_STATUS == _USB_STATE_CONNECTED;
+
+    if(_IS_USB_STATE_UPDATED || firstTick){
+        canvas.setTextColor(isUsbConnected ? TFT_GREEN : TFT_RED);
+
+        canvas.fillRect(0, 15, canvas.width(), 30 + canvas.fontHeight());
+
+        canvas.drawCenterString("State:", canvas.width() / 2, 20);
+        canvas.drawCenterString(isUsbConnected ? "Connected" : "Disconnected", canvas.width() / 2, 20 + canvas.fontHeight());
+
+        _IS_USB_STATE_UPDATED = false;
+    }
 
     if (M5Cardputer.Keyboard.isChange()) {
         if (M5Cardputer.Keyboard.isPressed()) {
@@ -50,6 +61,7 @@ void be_a_keyboard(M5Canvas &canvas, USBHIDKeyboard &USB_Keyboard){
 
     drawKeyboard(canvas, canvas.width() / 2 - 73, 80, TFT_DARKGRAY, TFT_WHITE);
 
+    firstTick = false;
 }
 
 void disableRegularKeyboard(){
