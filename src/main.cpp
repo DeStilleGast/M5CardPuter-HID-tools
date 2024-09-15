@@ -13,6 +13,7 @@
 #include "auto_clicker.h"
 #include "mouse_jiggler.h"
 #include "keyboard_masher.h"
+#include "regular_keyboard.h"
 #include "globals.h"
 
 USBHIDKeyboard USB_Keyboard;
@@ -128,7 +129,8 @@ void loop() {
             be_a_keyboard_masher(canvas, USB_Keyboard);
             break;
         case 4:
-            be_a_keyboard();
+            be_a_keyboard(canvas, USB_Keyboard);
+            break;
         default:
             break;
     }
@@ -154,7 +156,9 @@ void drawMenuInterface() {
             // canvas.pushImage(canvas.width() / 2 - 32, canvas.height() / 2 - 32,  64, 64, image_data_keyboard_big, TFT_BLACK);
             break;
         case 3:
-            // break;
+            break;
+        case 4:
+            break;
         default:
             modeStr = "Unknown > " + String(menuIndex);
             break;
@@ -197,46 +201,6 @@ void prepare_next_application(int &appIndex){
     _rgbLed.setPixelColor(0, _rgbLed.Color(255,0,0));
     _rgbLed.show();
 
-}
-
-
-void be_a_keyboard() {
-    if (M5Cardputer.Keyboard.isChange()) {
-        if (M5Cardputer.Keyboard.isPressed()) {
-            Keyboard_Class::KeysState status = M5Cardputer.Keyboard.keysState();
-            // for (auto i : status.word) {
-            //     Keyboard.press(i);
-            // }
-            KeyReport report = {0};
-            report.modifiers = status.modifiers;
-            uint8_t index = 0;
-            for (auto i : status.hid_keys) {
-                report.keys[index] = i;
-                index++;
-                if (index > 5) {
-                    index = 5;
-                }
-            }
-            USB_Keyboard.sendReport(&report);
-            USB_Keyboard.releaseAll();
-
-            // only text for display
-            String keyStr = "";
-            for (auto i : status.word) {
-                if (keyStr != "") {
-                    keyStr = keyStr + "+" + i;
-                } else {
-                    keyStr += i;
-                }
-            }
-
-            if (keyStr.length() > 0) {
-                canvas.drawString(keyStr, canvas.width() / 2, canvas.height() / 2);
-            }
-        } else {
-            canvas.drawString("USB Keyboard", canvas.width() / 2, canvas.height() / 2);
-        }
-    }
 }
 
 // static void usbEventCallback(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data){
