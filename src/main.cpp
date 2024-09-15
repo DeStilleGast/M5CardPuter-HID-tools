@@ -12,6 +12,7 @@
 
 #include "auto_clicker.h"
 #include "mouse_jiggler.h"
+#include "keyboard_masher.h"
 #include "globals.h"
 
 USBHIDKeyboard USB_Keyboard;
@@ -23,7 +24,7 @@ M5Canvas canvas(&M5Cardputer.Display);
 Adafruit_NeoPixel _rgbLed;
 int rainbowColor = 0;
 
-const char* mainMenuOptions[] = {"Auto clicker", "Mouse jiggler", "Mash keyboard", "Be a keyboard"};
+const char* mainMenuOptions[] = {"Auto clicker", "Mouse jiggler", "Mash keyboard", "Be a keyboard", "Be a mouse"};
 const unsigned int mainMenuSize = sizeof(mainMenuOptions) / sizeof(*mainMenuOptions);
 int menuIndex = 0;
 int currentAction = 0;
@@ -66,12 +67,13 @@ void setup() {
 
     USB_Keyboard.begin();
     USB_Mouse.begin();
-    USB.begin();
+    // USB.begin();
 
     // USB.onEvent(usbEventCallback);
 
-    auto cfg = M5.config();
-    M5Cardputer.begin(cfg, true);
+    // auto cfg = M5.config();
+    // M5Cardputer.begin(cfg, true);
+    M5Cardputer.begin(true);
 
     canvas.createSprite(M5Cardputer.Display.width(), M5Cardputer.Display.height());
     canvas.pushSprite(0, 0);
@@ -83,6 +85,9 @@ void setup() {
 
     _rgbLed.begin();
     _rgbLed.setBrightness(50);  // Set LED brightness (0-255)
+      
+    _rgbLed.setPixelColor(0,0);
+    _rgbLed.show(); // Reset color to black/off
 }
 
 void loop() {
@@ -121,6 +126,9 @@ void loop() {
             be_a_mouse_jiggler(canvas, USB_Mouse);
             break;
         case 3:
+            be_a_keyboard_masher(canvas, USB_Keyboard);
+            break;
+        case 4:
             be_a_keyboard();
         default:
             break;
@@ -146,8 +154,10 @@ void drawMenuInterface() {
         case 2:
             // canvas.pushImage(canvas.width() / 2 - 32, canvas.height() / 2 - 32,  64, 64, image_data_keyboard_big, TFT_BLACK);
             break;
+        case 3:
+            // break;
         default:
-            modeStr = "??? > " + currentAction;
+            modeStr = "Unknown > " + String(menuIndex);
             break;
     }
 
@@ -189,10 +199,9 @@ void be_a_menu() {
 }
 
 void prepare_next_application(int &appIndex){
-  if(appIndex == 1 || appIndex == 2){
+  
     _rgbLed.setPixelColor(0, _rgbLed.Color(255,0,0));
     _rgbLed.show();
-  }
 
 }
 

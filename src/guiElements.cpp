@@ -1,6 +1,6 @@
 
 #include "M5GFX.h"
-
+#include "M5Cardputer.h"
 
 void drawVolumeBar(M5Canvas &canvas, int32_t x, int32_t y, int32_t w, int32_t h, int32_t progress, int32_t max_progress, int border_color, int active_color, int inactive_color){
 
@@ -84,4 +84,20 @@ void drawMouseIcon(M5Canvas &canvas, int32_t x, int32_t y, int TFT_BACKGROUND_CO
     canvas.drawWedgeLine(x, 50, x, canvas.height() - 50, 30, 30, TFT_WHITE);
     canvas.fillRect(x - 25, 50, 51, 5, TFT_BLACK);
     canvas.fillRect(x - 1, 25, 3, 20, TFT_BLACK);
+}
+
+void drawKeyboard(M5Canvas &canvas, unsigned int x, unsigned int y, int colorNotPushed, int colorPushed) {
+    canvas.drawRect(x, y, 146, 46, TFT_WHITE); // Outer rectangle
+    // canvas.drawRect(12, 12, 104, 42, TFT_WHITE); // Inner rectangle
+    
+    // Draw keys
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 14; j++) {
+            KeyValue_t key = M5Cardputer.Keyboard.getKeyValue(Point2D_t{ j, i });
+            
+
+
+            canvas.drawRect(x + 4 + j * 10, y + 4 + i * 10, 8, 8, M5Cardputer.Keyboard.isKeyPressed(key.value_first) || (M5Cardputer.Keyboard.isKeyPressed(key.value_second) & M5Cardputer.Keyboard.keysState().shift) ? colorPushed :colorNotPushed);
+        }
+    }
 }

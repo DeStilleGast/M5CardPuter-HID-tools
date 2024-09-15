@@ -6,8 +6,6 @@
 #include "globals.h"
 #include "guiElements.h"
 
-#include <iterator>
-
 
 struct Vector2 {
   int x;
