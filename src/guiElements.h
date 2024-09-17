@@ -11,4 +11,4 @@ void drawLabeledTextBox(M5Canvas &canvas, String label, String text, int32_t x, 
 void drawCrossedBox(M5Canvas &canvas, int32_t x, int32_t y, int32_t w, int32_t h);
 
 
-void drawKeyboard(M5Canvas &canvas, unsigned int x, unsigned int y, int colorNotPushed, int colorPushed);
+void drawKeyboard(M5Canvas &canvas, unsigned int x, unsigned int y);

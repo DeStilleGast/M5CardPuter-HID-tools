@@ -59,7 +59,7 @@ void be_a_keyboard(M5Canvas &canvas, USBHIDKeyboard &USB_Keyboard){
         }
     }
 
-    drawKeyboard(canvas, canvas.width() / 2 - 73, 80, TFT_DARKGRAY, TFT_WHITE);
+    drawKeyboard(canvas, canvas.width() / 2 - 73, 80);
 
     firstTick = false;
 }

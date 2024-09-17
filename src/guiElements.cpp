@@ -88,7 +88,7 @@ void drawMouseIcon(M5Canvas &canvas, int32_t x, int32_t y, int TFT_BACKGROUND_CO
     canvas.fillRect(x - 1, 25, 3, 20, TFT_BLACK);
 }
 
-void drawKeyboard(M5Canvas &canvas, unsigned int x, unsigned int y, int colorNotPushed, int colorPushed) {
+void drawKeyboard(M5Canvas &canvas, unsigned int x, unsigned int y) {
     canvas.drawRect(x, y, 146, 46, TFT_WHITE); // Outer rectangle
     // canvas.drawRect(12, 12, 104, 42, TFT_WHITE); // Inner rectangle
     
@@ -97,9 +97,15 @@ void drawKeyboard(M5Canvas &canvas, unsigned int x, unsigned int y, int colorNot
         for (int j = 0; j < 14; j++) {
             KeyValue_t key = M5Cardputer.Keyboard.getKeyValue(Point2D_t{ j, i });
             
-
-
-            canvas.drawRect(x + 4 + j * 10, y + 4 + i * 10, 8, 8, M5Cardputer.Keyboard.isKeyPressed(key.value_first) || (M5Cardputer.Keyboard.isKeyPressed(key.value_second) & M5Cardputer.Keyboard.keysState().shift) ? colorPushed :colorNotPushed);
+            if(i== 2 && j == 0){
+                canvas.drawRect(x + 4 + j * 10, y + 4 + i * 10, 8, 8, M5Cardputer.Keyboard.isKeyPressed(key.value_first) || (M5Cardputer.Keyboard.isKeyPressed(key.value_second) & M5Cardputer.Keyboard.keysState().shift) ? TFT_WHITE :TFT_ORANGE);
+            } else if(i == 2 && j == 1 ) {
+                canvas.drawRect(x + 4 + j * 10, y + 4 + i * 10, 8, 8, M5Cardputer.Keyboard.isKeyPressed(key.value_first) || (M5Cardputer.Keyboard.isKeyPressed(key.value_second) & M5Cardputer.Keyboard.keysState().shift) ? TFT_WHITE : TFT_DARKCYAN);
+            } else if(i == 3 && j == 1 ) {
+                canvas.drawRect(x + 4 + j * 10, y + 4 + i * 10, 8, 8, M5Cardputer.Keyboard.isKeyPressed(key.value_first) || (M5Cardputer.Keyboard.isKeyPressed(key.value_second) & M5Cardputer.Keyboard.keysState().shift) ? TFT_WHITE : TFT_DARKGREEN);
+            } else {
+                canvas.drawRect(x + 4 + j * 10, y + 4 + i * 10, 8, 8, M5Cardputer.Keyboard.isKeyPressed(key.value_first) || (M5Cardputer.Keyboard.isKeyPressed(key.value_second) & M5Cardputer.Keyboard.keysState().shift) ? TFT_WHITE : TFT_DARKGRAY);
+            }            
         }
     }
 }
