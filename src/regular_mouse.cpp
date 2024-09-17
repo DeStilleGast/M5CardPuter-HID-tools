@@ -39,7 +39,7 @@ void be_a_mouse(M5Canvas &canvas, USBHIDMouse &USB_Mouse){
     
         _IS_USB_STATE_UPDATED = false;
 
-        int padX = canvas.width() - 75;
+        int padX = canvas.width() - 60;
         int padY = canvas.height() / 2;
 
         drawPad(canvas, padX, padY);
