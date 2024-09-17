@@ -37,7 +37,7 @@ void be_a_mouse(M5Canvas &canvas, USBHIDMouse &USB_Mouse){
 
     if (M5Cardputer.Keyboard.isChange() || _IS_USB_STATE_UPDATED) {  // key up triggers from the main menu
     
-        _IS_USB_STATE_UPDATED = true;
+        _IS_USB_STATE_UPDATED = false;
 
         int padX = canvas.width() - 75;
         int padY = canvas.height() / 2;

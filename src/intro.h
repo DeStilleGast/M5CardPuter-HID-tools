@@ -1,0 +1,1 @@
+void runIntro(M5Canvas &canvas);

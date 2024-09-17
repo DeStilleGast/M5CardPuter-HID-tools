@@ -7,7 +7,7 @@
 #include "M5Cardputer.h"
 
 
-const int TFT_BACKGROUND_COLOR = 0x528a;
+const int TFT_BACKGROUND_COLOR = 0x0; //0x528a;
 
 enum UsbKeyboardState_t
 {

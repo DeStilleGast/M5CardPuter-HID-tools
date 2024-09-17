@@ -18,6 +18,8 @@
 
 #include "globals.h"
 
+#include "intro.h"
+
 USBHIDKeyboard USB_Keyboard;
 USBHIDMouse USB_Mouse;
 
@@ -81,6 +83,8 @@ void setup() {
 
     M5Cardputer.Speaker.setVolume(50);
 
+    runIntro(canvas);
+
     drawMenuInterface();
 
     _rgbLed.begin();
@@ -117,6 +121,10 @@ void loop() {
     }
 
     switch (currentAction) {
+        case -1:
+            runIntro(canvas);
+            currentAction = 0;
+            break;
         case 0:
             be_a_menu();
             break;
@@ -172,6 +180,11 @@ void drawMenuInterface() {
     canvas.setFont(&fonts::FreeMono12pt7b);
     canvas.drawCenterString(modeStr, M5Cardputer.Display.width() / 2, 10);
 
+
+    // canvas.setTextColor(TFT_WHITE);
+    // canvas.setFont(&fonts::DejaVu9);
+    // canvas.drawRightString("Press G0 to come back", canvas.width(), canvas.height() - canvas.fontHeight());
+    // canvas.drawString("Press P or [space] to toggle state", 0, canvas.height() - (canvas.fontHeight()*2));
 }
 
 void be_a_menu() {
@@ -202,6 +215,9 @@ void be_a_menu() {
 
 void prepare_next_application(int &appIndex){
 
+    // Reset fonts
+    canvas.setFont(&fonts::FreeMono12pt7b);
+
     if(appIndex == 4 || appIndex == 5){
         if(_USB_PORT_STATUS == _USB_STATE_CONNECTED){
             _rgbLed.setPixelColor(0, _rgbLed.Color(0,255,0));
@@ -216,32 +232,6 @@ void prepare_next_application(int &appIndex){
     }
 
 }
-
-// static void usbEventCallback(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data){
-//   if(event_base == ARDUINO_USB_EVENTS){
-//     arduino_usb_event_data_t * data = (arduino_usb_event_data_t*)event_data;
-//     switch (event_id){
-//       case ARDUINO_USB_STARTED_EVENT:
-//         _USB_PORT_STATUS = _USB_STATE_CONNECTED;
-//         _IS_USB_STATE_UPDATED = true;
-//         break;
-//       case ARDUINO_USB_STOPPED_EVENT:
-//         _USB_PORT_STATUS = _USB_STATE_WAITING;
-//         _IS_USB_STATE_UPDATED = true;
-//         break;
-//       case ARDUINO_USB_SUSPEND_EVENT:
-//         _USB_PORT_STATUS = _USB_STATE_WAITING;
-//         _IS_USB_STATE_UPDATED = true;
-//         break;
-//       case ARDUINO_USB_RESUME_EVENT:
-//         _USB_PORT_STATUS = _USB_STATE_CONNECTED;
-//         _IS_USB_STATE_UPDATED = true;
-//         break;
-//       default:
-//         break;
-//     }
-//   }
-// }
 
 
 void drawUsbConnectionStatus(){
