@@ -44,14 +44,19 @@ void runIntro(M5Canvas &c){
     c.drawRoundRect(topPosX, topPosY, 120, topPosY, 3, TFT_WHITE);
     c.drawLine(topPosX, topPosY + 20, topPosX + 120, topPosY + 20);
 
-    c.drawBezier(topPosX + 90, topPosY+20, topPosX + 90, topPosY +20 + 10, topPosX + 90 + 10, topPosY + 20 + 10, topPosX + 90 + 10, topPosY+20); // right shoulder
-    c.drawBezier(topPosX + 20, topPosY+20, topPosX + 20, topPosY +20 + 10, topPosX + 20 + 10, topPosY + 20 + 10, topPosX + 20 + 10, topPosY+20); // left shoulder
+    c.drawBezier(topPosX + 90, topPosY+20+10, topPosX + 90, topPosY +20, topPosX + 90 + 10, topPosY + 20, topPosX + 90 + 10, topPosY+20+10); // right shoulder
+    c.drawBezier(topPosX + 20, topPosY+20+10, topPosX + 20, topPosY +20, topPosX + 20 + 10, topPosY + 20, topPosX + 20 + 10, topPosY+20+10); // left shoulder
 
     c.drawLine(topPosX + 40, topPosY + 25, topPosX + 50, topPosY + 25, TFT_WHITE); // SD slot
 
-    c.fillCircle(topPosX + 10, topPosY+22, 3, TFT_WHITE); // IR dot
+    c.fillCircle(topPosX + 10, topPosY+22, 3, 0x8016); // IR dot
 
-    c.fillArc(topPosX + 95, topPosY + 22, 10, 13, 0, 360, TFT_RED);
+    c.drawWideLine(topPosX + 70, topPosY + 30, topPosX + 65, topPosY + 30, 5, TFT_WHITE);
+    c.drawWideLine(topPosX + 70, topPosY + 30, topPosX + 65, topPosY + 30, 4, TFT_BLACK);
+    c.fillCircle(topPosX + 65, topPosY + 30, 2, TFT_WHITE); // on/off switch
+
+
+    c.fillArc(topPosX + 95, topPosY + 24, 10, 13, 0, 360, TFT_RED);
 
     c.drawCenterString("Press G0 to go back", c.width() / 2, c.height() - 20, &fonts::FreeMono9pt7b);
 
@@ -60,8 +65,7 @@ void runIntro(M5Canvas &c){
     while (!M5Cardputer.BtnA.isPressed()){
         M5Cardputer.update();
     }
-    
-    
+
     while (M5Cardputer.BtnA.isPressed()){
         M5Cardputer.update();
     }
