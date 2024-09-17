@@ -11,7 +11,7 @@
 void drawKeyboard_random(M5Canvas &canvas, unsigned int x, unsigned int y, char pressedKey, int colorNotPushed, int colorPushed);
 
 bool isMasherActive = false;
-unsigned int mashSpeed = 1000;
+int mashSpeed = 1000;
 unsigned long lastUpdate = 0;
 unsigned long lastRelease = 0;
 
@@ -74,7 +74,13 @@ void be_a_keyboard_masher(M5Canvas &canvas, USBHIDKeyboard &USB_Keyboard){
             keyToPress = '0' + (randomKey - 26); // Convert to a number (0-9)
         }
     
-        if(!isMasherActive) keyToPress = '|';
+        if(isMasherActive){
+            drawKeyboard_random(canvas, canvas.width() / 2 - 73, 80, keyToPress, TFT_DARKGRAY, TFT_WHITE);
+
+            USB_Keyboard.press(keyToPress);
+        } else { 
+            drawKeyboard_random(canvas, canvas.width() / 2 - 73, 80, '|', TFT_DARKGRAY, TFT_WHITE);
+        }
 
         // Serial.print("Going to press:");
         // Serial.printf("%d", randomKey);        
@@ -84,9 +90,7 @@ void be_a_keyboard_masher(M5Canvas &canvas, USBHIDKeyboard &USB_Keyboard){
         // canvas.drawString(String(keyToPress), 10, 10);
 
 
-        drawKeyboard_random(canvas, canvas.width() / 2 - 73, 80, keyToPress, TFT_DARKGRAY, TFT_WHITE);
-
-        USB_Keyboard.press(keyToPress);
+        
 
         lastRelease = millis();
 
