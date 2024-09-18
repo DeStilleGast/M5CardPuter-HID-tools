@@ -36,6 +36,36 @@ void runIntro(M5Canvas &c){
         }
     }
 
+    
+    c.fillRect(25 + 6 * 25, 1 + 3 * 20, 20, 15, TFT_BLACK); 
+    c.drawRect(25 + 6 * 25, 1 + 3 * 20, 20, 15, TFT_WHITE); // draw green key white
+
+    c.fillRect(25 + 4 * 25, 1 + 2 * 20, 20, 15, TFT_ORANGE); // draw orange arrow keys
+    
+    c.fillRect(25 + 3 * 25, 1 + 3 * 20, 20, 15, TFT_ORANGE); // draw green key white
+    c.fillRect(25 + 4 * 25, 1 + 3 * 20, 20, 15, TFT_ORANGE); // draw green key white
+    c.fillRect(25 + 5 * 25, 1 + 3 * 20, 20, 15, TFT_ORANGE); // draw green key white
+
+    c.fillRect(0, c.height() - 40, c.width(), 50, TFT_BLACK);
+
+
+    c.drawCenterString("Press [arrow] to", c.width() / 2, c.height() - 40, &fonts::FreeMono9pt7b);
+    c.drawCenterString("naviage the FW", c.width() / 2, c.height() - 20, &fonts::FreeMono9pt7b);
+
+    c.pushSprite(0, 0);
+
+    while(true){
+        M5Cardputer.update();
+
+        if(M5Cardputer.BtnA.isPressed()) {
+            return;
+        }
+
+        if(M5Cardputer.Keyboard.isKeyPressed(',') || M5Cardputer.Keyboard.isKeyPressed('.') || M5Cardputer.Keyboard.isKeyPressed('/') || M5Cardputer.Keyboard.isKeyPressed(';')){
+            break;
+        }
+    }
+
 
     c.clear();
 

@@ -147,8 +147,6 @@ void loop() {
             break;
     }
 
-    // canvas.fillTriangle(canvas.width(), 0, canvas.width() - 50, 0, canvas.width(), 50, _USB_PORT_STATUS == _USB_STATE_CONNECTED ? TFT_GREEN : TFT_RED);
-
     canvas.pushSprite(0, 0);
 }
 
