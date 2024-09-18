@@ -180,6 +180,9 @@ void drawMenuInterface() {
     canvas.setFont(&fonts::FreeMono12pt7b);
     canvas.drawCenterString(modeStr, M5Cardputer.Display.width() / 2, 10);
 
+    canvas.fillTriangle(25, 5, 25, 31, 12, 18, menuIndex == 0 ? TFT_RED : TFT_GREEN);
+    canvas.fillTriangle(canvas.width() - 25, 5, canvas.width() - 25, 31, canvas.width() - 12, 18, menuIndex == mainMenuSize -1 ? TFT_RED : TFT_GREEN);
+
 
     // canvas.setTextColor(TFT_WHITE);
     // canvas.setFont(&fonts::DejaVu9);
@@ -195,7 +198,7 @@ void be_a_menu() {
             menuIndex--;
         } else if (M5Cardputer.Keyboard.isKeyPressed('.') || M5Cardputer.Keyboard.isKeyPressed('/')) {  // down
             menuIndex++;
-        } else if (M5Cardputer.Keyboard.isKeyPressed(KEY_ENTER)) {
+        } else if (M5Cardputer.Keyboard.isKeyPressed(KEY_ENTER) || M5Cardputer.Keyboard.isKeyPressed(' ')) {
             currentAction = menuIndex + 1;
             prepare_next_application(currentAction);
             canvas.clear(TFT_BACKGROUND_COLOR);
