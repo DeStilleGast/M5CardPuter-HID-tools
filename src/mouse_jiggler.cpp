@@ -42,7 +42,7 @@ int jiggleSpeed = 1000;
 // menu
 int selectedPatternIndex = 0;
 unsigned int selectAction = 0;
-String patternNames[] = { "Square", "Triangle", "L <-> R" };
+String patternNames[] = { "Square", "Triangle", "L <-> R", "Random" };
 u32_t menuItemSize = sizeof(patternNames) / sizeof(*patternNames);
 
 // circle pattern
@@ -83,6 +83,10 @@ void be_a_mouse_jiggler(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
         posIndex = getPatternPos(patternSize);
 
         currentPos = leftRightPattern[posIndex];
+    } else if(selectedPatternIndex == 3){
+        
+        currentPos = Vector2 {x: random(-5, 6), y: random(-5, 6) };
+        posIndex += millis() % 127;
     }
 
     // canvas.drawString(String(posIndex), 5, 5);
@@ -120,6 +124,8 @@ void be_a_mouse_jiggler(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
 
         selectedPatternIndex = constrain(selectedPatternIndex, 0, menuItemSize-1);
         jiggleSpeed = constrain(jiggleSpeed, 100, 20000);
+
+        canvas.setFont(&fonts::FreeMono12pt7b);
 
         drawLabeledTextBox(canvas, "Pattern", patternNames[selectedPatternIndex], 30, 5, canvas.width() - 60, canvas.fontHeight() + 4, TFT_BACKGROUND_COLOR, TFT_WHITE);
 
