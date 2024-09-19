@@ -69,10 +69,7 @@ void setup() {
 
     USB_Keyboard.begin();
     USB_Mouse.begin();
-    USB.begin();
-
-    // USB.onEvent(usbEventCallback);
-
+    
     // auto cfg = M5.config();
     // M5Cardputer.begin(cfg, true);
     M5Cardputer.begin(true);
@@ -84,6 +81,8 @@ void setup() {
     M5Cardputer.Speaker.setVolume(50);
 
     runIntro(canvas);
+
+    USB.begin();
 
     drawMenuInterface();
 
