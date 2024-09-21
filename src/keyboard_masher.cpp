@@ -98,8 +98,8 @@ void be_a_keyboard_masher(M5Canvas &canvas, USBHIDKeyboard &USB_Keyboard){
     }
 }
 
-void disableKeyboardMasher(USBHIDKeyboard &USB_Keyboard){
-    USB_Keyboard.releaseAll();
+void disableKeyboardMasher(){
+    isMasherActive = false;
 }
 
 void drawKeyboard_random(M5Canvas &canvas, unsigned int x, unsigned int y, char pressedKey, int colorNotPushed, int colorPushed) {

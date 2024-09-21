@@ -102,18 +102,20 @@ void loop() {
     //  rainbowColor += 1;
     //  pixels.show();
 
-    if (M5Cardputer.BtnA.isPressed()) {
+    if (M5Cardputer.BtnA.isPressed() && currentAction != 0) {
         currentAction = 0;  // Reset back to menu
         menuIndex = 0;
 
         disableAutoClicker();
         disableMouseJiggler();
+        disableKeyboardMasher();
 
         USB_Mouse.release();
         USB_Keyboard.releaseAll();
 
         drawMenuInterface();
 
+        // turn off led
         _rgbLed.setPixelColor(0, 0);
         _rgbLed.show();
         return;

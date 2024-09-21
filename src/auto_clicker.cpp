@@ -105,7 +105,4 @@ void be_a_auto_clicker(M5Canvas &canvas, USBHIDMouse &USB_Mouse) {
 
 void disableAutoClicker() {
     isAutoClickerActive = false;
-    _rgbLed.setPixelColor(0, _rgbLed.Color(0, 0, 0));
-    _rgbLed.show();
-    // USB_Mouse.release();
 }
