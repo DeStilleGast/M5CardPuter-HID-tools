@@ -109,6 +109,8 @@ void loop() {
         disableAutoClicker();
         disableMouseJiggler();
         disableKeyboardMasher();
+        disableRegularKeyboard();
+        disableRegularMouse();
 
         USB_Mouse.release();
         USB_Keyboard.releaseAll();

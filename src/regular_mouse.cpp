@@ -13,17 +13,20 @@ void drawPad(M5Canvas &canvas, unsigned int x, unsigned int y);
 void be_a_mouse(M5Canvas &canvas, USBHIDMouse &USB_Mouse){
     bool isUsbConnected = _USB_PORT_STATUS == _USB_STATE_CONNECTED;
 
+    if(firstTickMouse){
+        canvas.drawArc(60, canvas.height(), 50, 0, 180, 270, TFT_WHITE);
+        canvas.drawArc(75, canvas.height(), 50, 0, 270, 360, TFT_WHITE);
 
-    canvas.drawArc(60, canvas.height(), 50, 0, 180, 270, TFT_WHITE);
-    canvas.drawArc(75, canvas.height(), 50, 0, 270, 360, TFT_WHITE);
+        canvas.setTextColor(TFT_WHITE);
+        canvas.drawString("L", 35, canvas.height() - 35);
+        canvas.drawString("'", 85, canvas.height() - 35);
 
-    canvas.setTextColor(TFT_WHITE);
-    canvas.drawString("L", 35, canvas.height() - 35);
-    canvas.drawString("'", 85, canvas.height() - 35);
+        canvas.drawString("Press Shift", 5, 5);
+        canvas.drawString("to move", 5, 5 + canvas.fontHeight());
+        canvas.drawString("faster", 5, 5 + canvas.fontHeight()*2);
 
-    canvas.drawString("Press Shift", 5, 5);
-    canvas.drawString("to move", 5, 5 + canvas.fontHeight());
-    canvas.drawString("faster", 5, 5 + canvas.fontHeight()*2);
+        firstTickMouse = false;
+    }
 
 
     if(_IS_USB_STATE_UPDATED){
@@ -109,4 +112,8 @@ void drawPad(M5Canvas &canvas, unsigned int x, unsigned int y){
     canvas.drawWideLine(x - 12, y - 12, x + 12, y + 12, 5, TFT_BACKGROUND_COLOR);
     canvas.drawWideLine(x + 12, y - 12, x - 12, y + 12, 5, TFT_BACKGROUND_COLOR);
 
+}
+
+void disableRegularMouse() { 
+    firstTickMouse = true;
 }
